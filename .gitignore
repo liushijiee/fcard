@@ -1,0 +1,13 @@
+﻿.env
+__pycache__/
+.env.backend
+bin/
+.cache/
+*.exe
+node_modules/
+frontend/dist/
+frontend/.env.local
+frontend/test-results/
+frontend/playwright-report/
+.env.postgres
+*.pyc

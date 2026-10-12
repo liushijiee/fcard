@@ -1,0 +1,25 @@
+.portal-shell { min-height: 100vh; }
+.portal-card-form { margin-top: 24px; padding: 24px; }
+.portal-card-form .panel-heading { padding: 0 0 24px; }
+.portal-card-form form { max-width: 620px; margin-top: 20px; }
+.portal-card-item { padding: 24px; border-top: 1px solid #e3e8e2; }
+.portal-card-item p { margin-top: 12px; }
+.portal-card-item .mono { overflow-wrap: anywhere; }
+.portal-card-item .row-actions { justify-content: flex-start; margin-top: 16px; }
+.portal-header { display: flex; align-items: center; justify-content: space-between; padding: 24px 6vw; background: var(--surface, #fff); border-bottom: 1px solid #e3e8e2; }
+.portal-body { max-width: 1080px; margin: auto; }
+.portal-nav { display: flex; gap: 24px; flex-wrap: wrap; align-items: center; padding: 24px 36px 0; }
+.portal-nav a, .portal-nav button { display: inline-flex; align-items: center; gap: 8px; color: #526256; font-size: 14px; }
+.portal-nav .router-link-exact-active { color: #24563b; font-weight: 700; }
+.portal-nav button { margin-left: auto; }
+.portal-details { padding: 24px; }
+.portal-note { margin-top: 24px; }
+.portal-security { max-width: 620px; }
+.portal-security .info-note { margin-bottom: 24px; }
+.portal-login { min-height: 100vh; display: grid; place-items: center; padding: 24px; background: radial-gradient(ellipse at top, #e1eddf, #f5f7f2 65%); }
+.portal-login-card { width: min(100%, 460px); padding: 36px; }
+.portal-login-card .brand { margin-bottom: 36px; }
+.portal-login-card h1 { margin: 16px 0; }
+.portal-login-card form { margin: 28px 0; }
+.portal-login-card form > button { width: 100%; }
+@media (max-width: 640px) { .portal-nav { padding: 20px; gap: 16px; } .portal-nav button { margin-left: 0; } .portal-login-card { padding: 24px; } .portal-details .mono { overflow-wrap: anywhere; } }
