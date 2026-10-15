@@ -1,6 +1,8 @@
 # Fcard Backend
 
-M1 / M1.5 后端及 M2 首个沙盒开卡切片：管理员与用户独立会话、用户管理、权限控制、审计和健康检查；管理员绑定已有 Airwallex 沙盒持卡人，用户申请、查询本人虚拟卡。开卡默认关闭，不包含资金账本、交易回调或真实链上入金。
+M1 / M1.5 后端及 M2 首个沙盒开卡切片：管理员与用户独立会话、用户管理、权限控制、审计和健康检查；管理员绑定已有 Airwallex 沙盒持卡人，用户申请、查询本人虚拟卡。开卡默认关闭，不包含资金账本、Airwallex消费回调或主网入金。
+
+已新增 Nile 测试收款切片：一次性网关创建、持久回调、独立链核验、管理员恢复/运维与用户页面；仅确认收款事实，不增加余额或卡额度。新环境默认关闭；本机已在2026-10-14按审核清单受控启用并追平，等待用户测试币转账。配置模板 `.env.deposits.example`，私有配置 `.env.deposits` 已忽略。联调先阅读 `docs/Nile-test-runbook.md` 和 `docs/Epusdt-plan.md` 第22节。
 
 已新增 Vue 3 + TypeScript + Vite 管理前端，详见 `frontend/README.md`。后端启动后，在 `frontend` 目录执行 `npm ci`、`npm run dev`，访问 `http://127.0.0.1:5173`。
 
@@ -127,13 +129,13 @@ powershell -NoProfile -File scripts/test-integration.ps1
 ## 当前限制
 
 - 沙盒开卡需显式启用，仅调用固定 Airwallex sandbox 地址。每用户最多一张已创建或待核查卡片，USD 累计测试限额由后端设置；不提供真实资金流水。
-- 链上收款项目尚未选型，不保存区块链私钥或接收真实 USDT。
+- 链上收款使用独立Epusdt和Fcard核验，仅开放审核的Nile测试资产；不保存区块链私钥，不提供主网收款。
 - 登录接口不提供公网服务承诺，TLS、代理策略及生产准入后续单独设计。
-- 管理前端与用户空间覆盖 M1/M1.5 及沙盒开卡切片，尚无入金、余额、消费记账、Webhook 或链上支付能力。
+- 管理前端与用户空间覆盖账号、沙盒开卡和Nile测试收款；尚无余额、消费记账、Airwallex消费Webhook及生产资金闭环。
 
 ## 沙盒开卡（M2 首个切片）
 
-先执行 `go run ./cmd/migrate` 升级到版本 5。原 `.env` 继续仅供 Python 消费模拟脚本使用；Go 后端不自动读取该文件。将沙盒凭证配置到不提交的 `.env.backend` 或进程环境变量，不要复制到前端。
+先执行 `go run ./cmd/migrate` 升级到当前版本10（包含沙盒开卡的版本5迁移）。原 `.env` 继续仅供 Python 消费模拟脚本使用；Go 后端不自动读取该文件。将沙盒凭证配置到不提交的 `.env.backend` 或进程环境变量，不要复制到前端。
 
 ```dotenv
 AIRWALLEX_ISSUING_ENABLED=true

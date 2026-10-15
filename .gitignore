@@ -10,4 +10,8 @@ frontend/.env.local
 frontend/test-results/
 frontend/playwright-report/
 .env.postgres
+.env.deposits
 *.pyc
+后端Spec.md
+项目文档.md
+run.txt

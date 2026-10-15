@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"fcard/internal/airwallex"
+	"fcard/internal/deposit"
 
 	"github.com/joho/godotenv"
 )
@@ -22,10 +23,11 @@ type Config struct {
 	Airwallex          airwallex.Config
 	CardLimitCents     int64
 	CardProgramPurpose string
+	Deposits           deposit.Settings
 }
 
 func Load() (Config, error) {
-	for _, filename := range []string{".env.backend", ".env.postgres"} {
+	for _, filename := range []string{".env.backend", ".env.postgres", ".env.deposits"} {
 		if err := godotenv.Load(filename); err != nil && !errors.Is(err, os.ErrNotExist) {
 			return Config{}, fmt.Errorf("load %s: %w", filename, err)
 		}
@@ -91,6 +93,10 @@ func FromEnvironment() (Config, error) {
 	parsed, err := url.Parse(config.DatabaseURL)
 	if err != nil || (parsed.Scheme != "postgres" && parsed.Scheme != "postgresql") || parsed.Host == "" || parsed.Path == "" {
 		return Config{}, errors.New("DATABASE_URL must be a PostgreSQL URL with a database name")
+	}
+	config.Deposits, err = deposit.SettingsFromEnvironment()
+	if err != nil {
+		return Config{}, err
 	}
 	return config, nil
 }

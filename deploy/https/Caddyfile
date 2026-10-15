@@ -1,0 +1,32 @@
+:80 {
+    # ngrok forwards to this listener on localhost:8999.
+    # Strip the Fcard prefix before forwarding to Gin.
+    handle_path /fcard/* {
+        reverse_proxy host.docker.internal:8081
+    }
+
+    # The configured callback uses the canonical Gin path.
+    handle /api/v1/deposits/notify {
+        reverse_proxy host.docker.internal:8081
+    }
+
+    # Retain the gateway prefix for public probes and checkout links.
+    handle_path /epusdt/* {
+        @public path /payments/gmpay/v1/config /pay/checkout-counter/* /pay/checkout-counter-resp/* /pay/check-status/* /pay/submit-tx-hash/* /pay/return/* /cashier/* /assets/* /images/* /static/* /favicon* /apple-touch-icon.png /manifest.webmanifest /registerSW.js /sw.js /workbox-*
+        route {
+            reverse_proxy @public host.docker.internal:19800
+            respond "Not found" 404
+        }
+    }
+
+    # Upstream redirects, browser requests and assets use root-relative URLs.
+    @checkout path /payments/gmpay/v1/config /pay/checkout-counter/* /pay/checkout-counter-resp/* /pay/check-status/* /pay/submit-tx-hash/* /pay/return/* /cashier/* /assets/* /images/* /static/* /favicon* /apple-touch-icon.png /manifest.webmanifest /registerSW.js /sw.js /workbox-*
+    handle @checkout {
+        reverse_proxy host.docker.internal:19800
+    }
+
+    # Epusdt admin, install, creation and network-switch routes stay local.
+    handle {
+        respond "Not found" 404
+    }
+}

@@ -19,6 +19,7 @@ import (
 	"fcard/internal/domain"
 	"fcard/internal/storage"
 	"fcard/internal/user"
+	"fcard/migrations"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -69,6 +70,19 @@ func integrationDatabase(t *testing.T) *pgxpool.Pool {
 		t.Fatal("migrated database is not ready")
 	}
 	return pool
+}
+
+func chainEvidenceDown(t *testing.T) string {
+	t.Helper()
+	var result strings.Builder
+	for _, filename := range []string{"000010_chain_transaction_index.down.sql", "000009_deposit_job_leases.down.sql", "000008_deposits.down.sql", "000007_chain_scan_v2.down.sql", "000006_chain_evidence.down.sql"} {
+		migration, err := migrations.Files.ReadFile(filename)
+		if err != nil {
+			t.Fatal(err)
+		}
+		result.Write(migration)
+	}
+	return result.String()
 }
 
 func send(handler http.Handler, method, path, token, body string) *httptest.ResponseRecorder {

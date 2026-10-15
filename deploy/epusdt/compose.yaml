@@ -1,0 +1,55 @@
+name: fcard-epusdt-nile
+
+services:
+  bootstrap:
+    image: fcard/epusdt-nile:619cecb
+    build:
+      context: .
+      additional_contexts:
+        epusdt_source: ../../.cache/epusdt-source
+      args:
+        GO_IMAGE: ${GO_IMAGE:?Run scripts/start-epusdt-testnet.ps1 first}
+        RUNTIME_IMAGE: ${RUNTIME_IMAGE:?Run scripts/start-epusdt-testnet.ps1 first}
+    command: [bootstrap]
+    profiles: [setup]
+    network_mode: none
+    volumes:
+      - ../../.cache/epusdt-testnet/conf:/app/conf
+      - primary:/app/data
+      - runtime:/app/runtime
+    security_opt:
+      - no-new-privileges:true
+
+  gateway:
+    image: fcard/epusdt-nile:619cecb
+    restart: unless-stopped
+    volumes:
+      - ../../.cache/epusdt-testnet/conf:/app/conf:ro
+      - primary:/app/data
+      - runtime:/app/runtime
+    expose: ["8000"]
+    healthcheck:
+      test: [CMD, wget, -q, -O, /dev/null, http://127.0.0.1:8000/payments/gmpay/v1/config]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+    security_opt:
+      - no-new-privileges:true
+
+  edge:
+    image: ${EDGE_IMAGE:?Run scripts/start-epusdt-testnet.ps1 first}
+    restart: unless-stopped
+    depends_on:
+      gateway:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:19800:8080"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  primary:
+  runtime:

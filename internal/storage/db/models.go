@@ -52,11 +52,164 @@ type Card struct {
 	UpdatedAt            time.Time
 }
 
+type ChainScanBlock struct {
+	ChainEnvironment string
+	GenesisID        string
+	Network          string
+	Scanner          string
+	BlockHeight      int64
+	BlockID          string
+	ParentID         string
+	BlockTime        time.Time
+	EvidenceHash     string
+	EvidenceJson     []byte
+	CreatedAt        time.Time
+}
+
+type ChainScanCursor struct {
+	ChainEnvironment string
+	GenesisID        string
+	Network          string
+	Scanner          string
+	Contract         string
+	EvidenceVersion  int32
+	StartHeight      int64
+	StartBlockID     string
+	BlockHeight      int64
+	BlockID          string
+	UpdatedAt        time.Time
+}
+
+type ChainScanTransaction struct {
+	ChainEnvironment string
+	GenesisID        string
+	Network          string
+	Scanner          string
+	TxHash           string
+	BlockHeight      int64
+	BlockID          string
+	BlockTime        time.Time
+	ReceiptHash      string
+}
+
+type ChainTransfer struct {
+	ChainEnvironment string
+	GenesisID        string
+	Network          string
+	TxHash           string
+	EventIndex       int32
+	Contract         string
+	FromAddress      string
+	ToAddress        string
+	RawUnits         string
+	BlockHeight      int64
+	BlockID          string
+	BlockTime        time.Time
+	ReceiptHash      string
+	CreatedAt        time.Time
+}
+
 type CompanyIssuingProfile struct {
 	Singleton            bool
 	ProviderCardholderID string
 	LegalName            string
 	CreatedAt            time.Time
+}
+
+type DepositCallbackInbox struct {
+	ID               uuid.UUID
+	ChainEnvironment string
+	EventID          string
+	FactsHash        string
+	PayloadHash      string
+	KeyVersion       string
+	MerchantPid      string
+	GatewayOrderID   string
+	TradeID          string
+	RequestedUnits   int64
+	ActualUnits      int64
+	ReceiveAddress   string
+	Token            string
+	TxHash           string
+	RawPayload       []byte
+	Deliveries       int64
+	ReceivedAt       time.Time
+	LastReceivedAt   time.Time
+}
+
+type DepositEvent struct {
+	ID        uuid.UUID
+	OrderID   pgtype.UUID
+	InboxID   pgtype.UUID
+	Actor     string
+	ActorID   pgtype.UUID
+	Action    string
+	Facts     []byte
+	CreatedAt time.Time
+}
+
+type DepositJob struct {
+	ID            uuid.UUID
+	Kind          string
+	DedupeKey     string
+	OrderID       pgtype.UUID
+	InboxID       pgtype.UUID
+	Payload       []byte
+	Status        string
+	Attempts      int32
+	NextAttemptAt time.Time
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	LeaseToken    pgtype.UUID
+	LeaseUntil    pgtype.Timestamptz
+	LastError     string
+}
+
+type DepositOrder struct {
+	ID                uuid.UUID
+	UserID            uuid.UUID
+	AuthVersion       int64
+	IdempotencyKey    uuid.UUID
+	RequestedUnits    int64
+	ChainEnvironment  string
+	GenesisID         string
+	Network           string
+	Currency          string
+	Contract          string
+	Decimals          int32
+	MerchantPid       string
+	GatewayOrderID    string
+	NotifyUrl         string
+	RedirectUrl       string
+	GatewayOrigin     string
+	MaxQuoteSeconds   int32
+	QuarantineSeconds int32
+	Status            string
+	CreateToken       pgtype.UUID
+	CreateStartedAt   pgtype.Timestamptz
+	TradeID           pgtype.Text
+	ActualUnits       pgtype.Int8
+	ReceiveAddress    pgtype.Text
+	QuoteJson         []byte
+	ExpiresAt         pgtype.Timestamptz
+	ReservedUntil     pgtype.Timestamptz
+	ReviewReason      string
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
+}
+
+type DepositReceipt struct {
+	ID               uuid.UUID
+	OrderID          uuid.UUID
+	ChainEnvironment string
+	GenesisID        string
+	Network          string
+	TxHash           string
+	EventIndex       int32
+	ConfirmedUnits   int64
+	BlockTime        time.Time
+	ReceiptHash      string
+	ConfirmedAt      time.Time
 }
 
 type LoginRateLimit struct {

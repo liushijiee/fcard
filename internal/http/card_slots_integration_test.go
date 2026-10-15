@@ -235,7 +235,8 @@ func TestCardSlotMigrationBackfillsOnlyResolvedClosures(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := fixture.pool.Exec(ctx, string(down)+" UPDATE schema_migrations SET version=4;"); err != nil {
+	chainDown := chainEvidenceDown(t)
+	if _, err := fixture.pool.Exec(ctx, string(chainDown)+string(down)+" UPDATE schema_migrations SET version=4;"); err != nil {
 		t.Fatal(err)
 	}
 	if err := storage.Migrate(fixture.pool.Config().ConnString()); err != nil {

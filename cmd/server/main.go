@@ -14,6 +14,7 @@ import (
 	"fcard/internal/auth"
 	"fcard/internal/card"
 	"fcard/internal/config"
+	"fcard/internal/deposit"
 	httpapi "fcard/internal/http"
 	"fcard/internal/storage"
 	"fcard/internal/storage/db"
@@ -55,12 +56,27 @@ func run(logger *slog.Logger) error {
 		return errors.New("user authentication initialization failed")
 	}
 	cardService := card.New(pool, airwallex.New(settings.Airwallex), card.Options{Enabled: settings.IssuingEnabled, LimitCents: settings.CardLimitCents, ProgramPurpose: settings.CardProgramPurpose})
+	depositStartup, depositCancel := context.WithTimeout(ctx, 10*time.Second)
+	depositRuntime, err := deposit.NewRuntime(depositStartup, pool, settings.Deposits)
+	depositCancel()
+	if err != nil {
+		return errors.New("deposit initialization failed; check reviewed Nile configuration and database checkpoint")
+	}
+	var depositService *deposit.Service
+	var depositCallback http.Handler
+	depositErrors := make(chan error, 1)
+	if depositRuntime != nil {
+		depositService, depositCallback = depositRuntime.Service, depositRuntime.Callback
+		depositDone := make(chan struct{})
+		defer func() { stop(); <-depositDone }()
+		go func() { defer close(depositDone); depositErrors <- depositRuntime.Run(ctx, logger) }()
+	}
 	workerDone := make(chan struct{})
 	defer func() { stop(); <-workerDone }()
 	go func() { defer close(workerDone); cardService.Run(ctx, logger) }()
-	router := httpapi.New(authService, user.New(pool), func(ctx context.Context) error {
+	router := httpapi.NewWithDeposits(authService, user.New(pool), func(ctx context.Context) error {
 		return storage.Ready(ctx, pool)
-	}, logger, userAuth, cardService)
+	}, logger, userAuth, depositService, depositCallback, cardService)
 	server := &http.Server{
 		Addr:              settings.HTTPAddr,
 		Handler:           router,
@@ -90,18 +106,32 @@ func run(logger *slog.Logger) error {
 		}
 	}()
 	logger.Info("server listening", "address", settings.HTTPAddr, "environment", "sandbox")
-	select {
-	case err := <-serverErrors:
-		if !errors.Is(err, http.ErrServerClosed) {
-			return errors.New("HTTP listener failed; check HTTP_ADDR and port availability")
-		}
-	case <-ctx.Done():
-		shutdown, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		defer cancel()
-		if err := server.Shutdown(shutdown); err != nil {
-			server.Close()
-			return errors.New("HTTP shutdown timed out")
+	return waitForHTTP(ctx, server, serverErrors, depositErrors, logger)
+}
+
+func waitForHTTP(ctx context.Context, server *http.Server, serverErrors <-chan error, depositErrors <-chan error, logger *slog.Logger) error {
+	for {
+		select {
+		case <-depositErrors:
+			// Runtime.Run closes deposit admission before returning. Keep HTTP
+			// available for authentication, status queries and manual review.
+			depositErrors = nil
+			if ctx.Err() == nil {
+				logger.Error("deposit runtime stopped; admission disabled; HTTP remains available; inspect scanner and review queue")
+			}
+		case err := <-serverErrors:
+			if !errors.Is(err, http.ErrServerClosed) {
+				return errors.New("HTTP listener failed; check HTTP_ADDR and port availability")
+			}
+			return nil
+		case <-ctx.Done():
+			shutdown, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+			defer cancel()
+			if err := server.Shutdown(shutdown); err != nil {
+				server.Close()
+				return errors.New("HTTP shutdown timed out")
+			}
+			return nil
 		}
 	}
-	return nil
 }

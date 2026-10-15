@@ -238,6 +238,7 @@ func TestCompanyIssuingMigrationPreservesHistoricalCards(t *testing.T) {
 	fixture := newCardFixture(t)
 	ctx := context.Background()
 	customer := fixture.readyUser(t, "legacy-company@example.com")
+	chainDown := chainEvidenceDown(t)
 	slotDown, err := migrations.Files.ReadFile("000005_card_slots.down.sql")
 	if err != nil {
 		t.Fatal(err)
@@ -246,7 +247,7 @@ func TestCompanyIssuingMigrationPreservesHistoricalCards(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := fixture.pool.Exec(ctx, string(slotDown)+string(down)+" UPDATE schema_migrations SET version=3;"); err != nil {
+	if _, err := fixture.pool.Exec(ctx, string(chainDown)+string(slotDown)+string(down)+" UPDATE schema_migrations SET version=3;"); err != nil {
 		t.Fatal(err)
 	}
 	holderID, cardID := uuid.NewString(), uuid.New()
@@ -590,6 +591,7 @@ func TestSandboxMigrationPreservesExistingSessions(t *testing.T) {
 	fixture := newCardFixture(t)
 	ctx := context.Background()
 	login := fixture.readyUser(t, "migration-card@example.com")
+	chainDown := chainEvidenceDown(t)
 	slotDown, err := migrations.Files.ReadFile("000005_card_slots.down.sql")
 	if err != nil {
 		t.Fatal(err)
@@ -602,7 +604,7 @@ func TestSandboxMigrationPreservesExistingSessions(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := fixture.pool.Exec(ctx, string(slotDown)+string(companyDown)+string(down)+" UPDATE schema_migrations SET version=2;"); err != nil {
+	if _, err := fixture.pool.Exec(ctx, string(chainDown)+string(slotDown)+string(companyDown)+string(down)+" UPDATE schema_migrations SET version=2;"); err != nil {
 		t.Fatal(err)
 	}
 	if storage.Ready(ctx, fixture.pool) == nil {

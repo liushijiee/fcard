@@ -14,7 +14,9 @@ import (
 
 	"fcard/internal/auth"
 	"fcard/internal/card"
+	"fcard/internal/deposit"
 	"fcard/internal/domain"
+	"fcard/internal/epusdt"
 	"fcard/internal/user"
 	"fcard/internal/userauth"
 
@@ -29,6 +31,7 @@ type API struct {
 	logger   *slog.Logger
 	userAuth *userauth.Service
 	cards    *card.Service
+	deposits *deposit.Service
 }
 
 type response struct {
@@ -43,10 +46,14 @@ type apiError struct {
 }
 
 func New(authService *auth.Service, users *user.Service, ready func(context.Context) error, logger *slog.Logger, userAuth *userauth.Service, cardServices ...*card.Service) *gin.Engine {
+	return NewWithDeposits(authService, users, ready, logger, userAuth, nil, nil, cardServices...)
+}
+
+func NewWithDeposits(authService *auth.Service, users *user.Service, ready func(context.Context) error, logger *slog.Logger, userAuth *userauth.Service, deposits *deposit.Service, callback http.Handler, cardServices ...*card.Service) *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
 	router.SetTrustedProxies(nil)
-	api := &API{auth: authService, users: users, ready: ready, logger: logger, userAuth: userAuth}
+	api := &API{auth: authService, users: users, ready: ready, logger: logger, userAuth: userAuth, deposits: deposits}
 	if len(cardServices) > 0 {
 		api.cards = cardServices[0]
 	}
@@ -62,6 +69,8 @@ func New(authService *auth.Service, users *user.Service, ready func(context.Cont
 		api.success(request, http.StatusOK, gin.H{"status": "ready"})
 	})
 	router.POST("/api/v1/admin/auth/login", api.login)
+	// Public operational flags only; no wallet, merchant or order data.
+	router.GET("/health/deposits", api.depositAvailability)
 	admin := router.Group("/api/v1/admin", api.authenticate())
 	admin.GET("/auth/me", api.me)
 	admin.POST("/auth/logout", api.logout)
@@ -70,6 +79,10 @@ func New(authService *auth.Service, users *user.Service, ready func(context.Cont
 	admin.GET("/users/:id", api.getUser)
 	admin.PATCH("/users/:id", api.updateUser)
 	admin.GET("/audit-logs", api.listAudit)
+	admin.GET("/deposits", api.managedDeposits)
+	admin.GET("/deposits/:id", api.managedDeposit)
+	admin.POST("/deposits/:id/recover-quote", api.recoverDepositQuote)
+	admin.POST("/deposit-jobs/:id/requeue", api.requeueDepositJob)
 	admin.POST("/users/:id/password/reset", api.resetUserPassword)
 	adminCards := admin.Group("", api.requireCards())
 	adminCards.GET("/company/cardholder", api.getCardholder)
@@ -81,6 +94,14 @@ func New(authService *auth.Service, users *user.Service, ready func(context.Cont
 	portal.GET("/auth/me", api.userMe)
 	portal.POST("/auth/logout", api.userLogout)
 	portal.POST("/auth/change-password", api.changeUserPassword)
+	userDeposits := portal.Group("", api.requireUserReady())
+	userDeposits.GET("/deposits/config", api.depositAvailability)
+	userDeposits.GET("/deposits", api.listDeposits)
+	userDeposits.POST("/deposits", api.createDeposit)
+	userDeposits.GET("/deposits/:id", api.getDeposit)
+	if callback != nil {
+		router.POST("/api/v1/deposits/notify", gin.WrapH(callback))
+	}
 	userCards := portal.Group("", api.requireUserReady(), api.requireCards())
 	userCards.GET("/cards/config", api.cardAvailability)
 	userCards.GET("/cards", api.listUserCards)
@@ -291,6 +312,12 @@ func (api *API) fail(request *gin.Context, status int, code, message string) {
 
 func (api *API) handleError(request *gin.Context, err error) {
 	switch {
+	case errors.Is(err, deposit.ErrDepositCapacity):
+		api.fail(request, 409, "deposit_capacity", "resolve existing test deposits before creating more")
+	case errors.Is(err, epusdt.ErrQuoteMismatch):
+		api.fail(request, 400, "invalid_quote", "quote does not match saved order")
+	case errors.Is(err, deposit.ErrDepositsDisabled):
+		api.fail(request, 503, "deposits_disabled", "Nile deposits are not enabled or scanner is not ready")
 	case errors.Is(err, domain.ErrIssuingDisabled):
 		api.fail(request, 503, "issuing_disabled", "sandbox issuing is not configured")
 	case errors.Is(err, domain.ErrProviderUnavailable):

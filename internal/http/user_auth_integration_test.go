@@ -335,6 +335,7 @@ func TestUserAuthConcurrentChanges(t *testing.T) {
 func TestUserAuthMigrationPreservesUsers(t *testing.T) {
 	pool := integrationDatabase(t)
 	ctx := context.Background()
+	chainDown := chainEvidenceDown(t)
 	down, err := migrations.Files.ReadFile("000002_user_auth.down.sql")
 	if err != nil {
 		t.Fatal(err)
@@ -351,7 +352,7 @@ func TestUserAuthMigrationPreservesUsers(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := pool.Exec(ctx, string(slotDown)+string(companyDown)+string(cardDown)+string(down)+" UPDATE schema_migrations SET version=1;"); err != nil {
+	if _, err := pool.Exec(ctx, string(chainDown)+string(slotDown)+string(companyDown)+string(cardDown)+string(down)+" UPDATE schema_migrations SET version=1;"); err != nil {
 		t.Fatal(err)
 	}
 	id := uuid.New()
