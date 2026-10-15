@@ -12,6 +12,7 @@ export const router = createRouter({
       { path: '', name: 'portal-home', component: () => import('./views/PortalHomeView.vue'), meta: { title: '个人账号', description: '查看自己的账号资料与访问状态。' } },
       { path: 'security', name: 'portal-security', component: () => import('./views/PortalSecurityView.vue'), meta: { title: '账号安全', description: '修改密码后，所有用户会话将失效。' } },
       { path: 'cards', name: 'portal-cards', component: () => import('./views/PortalCardsView.vue'), meta: { title: '我的卡片', description: '申请和查询本人沙盒虚拟卡；不提供真实资金或完整卡号。' } },
+      { path: 'deposits', name: 'portal-deposits', component: () => import('./views/PortalDepositsView.vue'), meta: { title: 'Nile 测试收款', description: '仅测试网代币，不入余额、不提供提现。' } },
     ] },
     { path: '/login', name: 'login', component: () => import('./views/LoginView.vue') },
     {
@@ -20,6 +21,7 @@ export const router = createRouter({
         { path: 'users', name: 'users', component: () => import('./views/UsersView.vue'), meta: { title: '用户管理', description: '管理测试用户资料、账户状态与访问资格。' } },
         { path: 'audit', name: 'audit', component: () => import('./views/AuditView.vue'), meta: { title: '操作审计', description: '追踪每一次管理操作，保留完整的变更足迹。' } },
         { path: 'cardholders', name: 'cardholders', component: () => import('./views/CardholdersView.vue'), meta: { title: '公司发卡配置', description: '配置公司统一沙盒发卡身份，核查客户开卡结果。' } },
+        { path: 'deposits', name: 'deposits', component: () => import('./views/DepositsView.vue'), meta: { title: '测试收款运维', description: '审核未知订单、核验队列与未归属链事件。' } },
       ],
     },
     { path: '/:pathMatch(.*)*', component: () => import('./views/NotFoundView.vue') },

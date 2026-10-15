@@ -23,3 +23,142 @@
 .portal-login-card form { margin: 28px 0; }
 .portal-login-card form > button { width: 100%; }
 @media (max-width: 640px) { .portal-nav { padding: 20px; gap: 16px; } .portal-nav button { margin-left: 0; } .portal-login-card { padding: 24px; } .portal-details .mono { overflow-wrap: anywhere; } }
+/* Fcard personal workspace */
+.portal-shell{background:#fff;color:#20232b;--muted:#9297a3;--border:#e9e9ed}
+.portal-header{height:72px;padding:0 4vw}
+.portal-header-account,.portal-profile{display:flex;align-items:center;gap:18px}
+.portal-profile{gap:10px;font-size:12px;min-width:0}
+.portal-profile>span:nth-child(2){max-width:220px;overflow:hidden;text-overflow:ellipsis}
+.portal-body{max-width:1600px;display:grid;grid-template-columns:210px minmax(0,1fr);min-height:calc(100vh - 72px)}
+.portal-sidebar{padding:22px 22px 24px;display:flex;flex-direction:column}
+.portal-nav{padding:0;display:grid;gap:10px}
+.portal-nav a{padding:13px 16px;gap:12px;color:#777b85;border-radius:8px;font-size:14px}
+.portal-nav a:hover{background:#f7f7f8;color:#111}
+.portal-nav .router-link-exact-active{background:#f5f5f6;color:#15171c;font-weight:600}
+.portal-sidebar-bottom{margin-top:auto;padding:80px 16px 0;display:grid;gap:24px;font-size:12px;color:#777b85}
+.portal-sidebar-bottom a,.portal-sidebar-bottom button,.portal-sidebar-bottom>span{display:flex;align-items:center;gap:9px}
+.portal-sidebar-bottom button{padding:0;border:0;background:none;color:inherit;text-align:left}
+.portal-sidebar-bottom small{color:#a1a4ad}
+.portal-shell .page-content{min-width:0;width:100%;padding:32px 38px 0}
+.portal-shell .page-footer{margin-top:46px;color:#a1a4ad;font-size:10px}
+.portal-redesign .primary{background:#111;color:white}
+.portal-redesign .primary:hover:not(:disabled){background:#333}
+.portal-redesign .panel{box-shadow:none;border-color:#e9e9ed;border-radius:12px}
+.portal-redesign .panel-heading h2{color:#20232b;font-size:16px}
+.portal-redesign .panel-heading p{color:#858a96;font-size:12px;line-height:1.8}
+.portal-redesign .info-note{background:#f7f8fa;border:1px solid #eceef1;color:#7a808c;font-size:12px;line-height:1.9;border-radius:8px}
+.wallet-home{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:34px}
+.wallet-overview{display:flex;justify-content:space-between;align-items:center;gap:28px;min-height:157px;padding:0 0 30px;border-bottom:1px solid #e9e9ed}
+.wallet-balance h1{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:500}
+.wallet-amount{margin-top:10px;font-size:42px;color:#121318;font-weight:600;letter-spacing:-1.5px;white-space:nowrap}
+.wallet-amount>span{font-size:17px;letter-spacing:0}
+.wallet-balance p{margin-top:12px;color:#959aa5;font-size:12px}
+.wallet-actions{display:flex;gap:26px}
+.wallet-actions>*{display:flex;flex-direction:column;align-items:center;gap:10px;background:none;border:0;padding:0;font-size:12px;white-space:nowrap;color:#242730}
+.wallet-actions>*>span{width:46px;height:46px;display:grid;place-items:center;border-radius:50%;color:#fff;background:#111;transition:transform .2s}
+.wallet-actions>*:hover>span{transform:translateY(-3px);background:#34363c}
+.wallet-actions small{margin-top:-4px;color:#9b9faa;font-size:10px}
+.wallet-section{scroll-margin-top:24px;padding-top:27px}
+.wallet-section-heading{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.wallet-section-heading h2{font-size:16px;font-weight:500}
+.wallet-section-heading>span{color:#a1a5af;font-size:11px}
+.wallet-empty{min-height:242px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;padding:28px 12px}
+.empty-art{position:relative;color:#555b68;margin:10px 0 8px;width:65px;height:50px}
+.empty-art>svg:last-child{position:absolute;right:-3px;top:-5px;background:#fff}
+.wallet-empty strong{color:#969ba6;font-size:13px;font-weight:400}
+.wallet-empty p{color:#a3a7b0;font-size:12px;line-height:1.8}
+.wallet-inline-link{display:inline-flex;align-items:center;gap:6px;color:#23987f;font-size:12px}
+.wallet-inline-notice{padding:14px 18px;margin-top:16px;background:#f6f7f9;border-radius:8px;color:#767c87;font-size:12px;line-height:1.8}
+.wallet-right{padding-top:2px}
+.wallet-card-promo{padding:22px;display:flex;align-items:center;gap:12px;border:1px solid #e7e7eb;border-radius:12px;overflow:hidden}
+.wallet-card-promo>div:last-child{position:relative;flex:1}
+.wallet-card-promo h2{margin:8px 0;font-size:16px}
+.wallet-card-promo p{color:#858b96;font-size:12px;line-height:1.9;margin-bottom:12px}
+.mini-eyebrow{font-size:9px;letter-spacing:1.6px;opacity:.65}
+.wallet-welcome{padding:26px 4px}
+.wallet-welcome h2{font-size:14px;font-weight:500}
+.wallet-welcome p{margin:10px 0 18px;color:#979ca6;font-size:12px}
+.sandbox-label{display:inline-flex;padding:6px 10px;color:#8a8f99;background:#f5f5f7;font-size:11px;border-radius:5px}
+.cards-experience{max-width:990px;margin:0 auto}
+.cards-hero{position:relative;display:flex;align-items:center;justify-content:space-between;min-height:270px;padding:32px;border-radius:12px;background:linear-gradient(110deg,#ff954d,#f8ddaa 50%,#60ead6);isolation:isolate}
+.cards-hero-copy{z-index:2}
+.cards-hero h1{color:#fff;font-size:29px;font-weight:650;margin:12px 0;letter-spacing:-.7px}
+.cards-hero p{font-size:14px;color:#fff;line-height:1.8}
+.hero-cta{margin-top:30px;border-radius:25px;background:#111;color:#fff;min-width:220px;font-size:14px;padding:12px 22px}
+.hero-cta:hover{background:#333}
+.cards-hero-copy>small{display:block;margin-top:12px;font-size:11px;color:#fff}
+.fcard-artwork{position:relative;width:280px;height:190px;flex-shrink:0}
+.fcard-art-front,.fcard-art-back{position:absolute;width:250px;height:156px;border-radius:13px}
+.fcard-art-back{top:0;left:0;transform:rotate(9deg);background:linear-gradient(#ffa451 22%,#25272b 22%,#25272b 43%,#ffac69 43%);border:1px solid #ffffff60}
+.fcard-art-front{left:22px;top:25px;transform:rotate(22deg);background:linear-gradient(120deg,#ff862f,#ffc991 40%,#6af2d8);box-shadow:0 8px 12px #142b2826;border:1px solid #ffffff9c;overflow:hidden;color:#fff}
+.art-brand{position:absolute;left:17px;top:13px;display:flex;align-items:center;gap:6px;font-size:16px;font-weight:600}
+.art-brand .brand-mark{transform:scale(.55);transform-origin:left center;margin-right:-13px}
+.art-chip{width:30px;height:25px;position:absolute;left:23px;top:61px;border-radius:5px;background:#e8ddc2;border:1px solid #aa9d83}
+.art-chip:before,.art-chip:after{content:'';position:absolute;left:0;right:0;height:1px;top:8px;background:#b8ad95}
+.art-chip:after{top:16px}
+.art-chip i{display:block;border-inline:1px solid #b8ad95;width:13px;height:100%;margin:auto}
+.art-contactless{position:absolute;left:62px;top:64px;font-size:17px}
+.art-watermark{position:absolute;right:25px;top:15px;color:#ffffff65;font:italic 110px Georgia,serif}
+.art-number{position:absolute;left:22px;bottom:34px;font-size:14px;letter-spacing:1px}
+.art-caption{position:absolute;left:22px;bottom:13px;font-size:7px;letter-spacing:1.5px}
+.wallet-card-promo .fcard-artwork{width:90px;height:100px}
+.wallet-card-promo .fcard-art-front,.wallet-card-promo .fcard-art-back{transform:rotate(15deg) scale(.35);transform-origin:top left;top:15px;left:0}
+.wallet-card-promo .fcard-art-back{top:8px;transform:rotate(-8deg) scale(.35)}
+.card-benefits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:24px 0}
+.card-benefits article{background:#f7f7f8;padding:24px 12px;border-radius:10px;text-align:center}
+.benefit-icon{display:inline-grid;place-items:center;width:46px;height:46px;border-radius:16px;margin-bottom:12px}
+.benefit-icon.blue{background:#e5ecff;color:#3970ed}
+.benefit-icon.mint{background:#e0f7ed;color:#1ca687}
+.benefit-icon.violet{background:#ece8fc;color:#8062d9}
+.card-benefits h2{font-size:15px;margin-bottom:8px;font-weight:600}
+.card-benefits p,.card-benefits small{color:#969ba6;font-size:11px;line-height:1.9}
+.card-benefits small{display:block;margin-top:9px}
+.portal-redesign .portal-card-form{scroll-margin-top:24px}
+.portal-redesign .cards-experience .state-box{min-height:180px}
+.portal-redesign .portal-card-item{border-color:#ebecf0}
+.portal-redesign .portal-card-item h3{font-size:15px}
+.portal-redesign .portal-card-item p{font-size:12px;line-height:1.8}
+.cards-provider{text-align:center;padding:38px 0 0}
+.cards-provider h2{font-size:25px;letter-spacing:-1px;margin:10px 0}
+.cards-provider p{font-size:12px;color:#9a9eaa}
+@media(min-width:1500px){.wallet-home{gap:40px;grid-template-columns:minmax(0,1fr) 360px}}
+@media(max-width:1200px){.portal-body{grid-template-columns:180px minmax(0,1fr)}
+.portal-sidebar{padding-inline:12px}
+.portal-shell .page-content{padding-inline:24px}
+.wallet-home{grid-template-columns:minmax(0,1fr)}
+.wallet-right{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.wallet-actions{gap:28px}
+.cards-hero .fcard-artwork{transform:scale(.82);transform-origin:right center;margin-left:-40px}}
+@media(max-width:760px){.portal-header{padding-inline:20px;height:68px}
+.portal-header .brand{font-size:24px}
+.portal-profile>span:nth-child(2),.portal-profile>svg{display:none}
+.portal-header-account{gap:12px}
+.portal-body{display:block}
+.portal-sidebar{padding:12px 16px;border-bottom:1px solid #eee}
+.portal-nav{display:flex;flex-wrap:wrap;gap:4px;padding:0}
+.portal-nav a{font-size:12px;padding:10px;gap:6px}
+.portal-nav a svg{width:17px}
+.portal-sidebar-bottom{display:flex;flex-wrap:wrap;gap:12px;padding:12px 10px 0;font-size:10px}
+.portal-sidebar-bottom>span,.portal-sidebar-bottom small{display:none}
+.portal-shell .page-content{padding:24px 20px 0}
+.wallet-overview{gap:22px;align-items:flex-start;flex-direction:column}
+.wallet-actions{justify-content:space-around;width:100%;padding-top:6px}
+.wallet-right{grid-template-columns:1fr;gap:0}
+.wallet-empty{min-height:215px}
+.wallet-section-heading>span{font-size:10px}
+.cards-hero{padding:26px 22px;min-height:360px;align-items:flex-start;overflow:hidden}
+.cards-hero h1{font-size:25px}
+.cards-hero p{font-size:12px}
+.cards-hero .fcard-artwork{position:absolute;right:-12px;bottom:-50px;transform:scale(.65);opacity:.85;z-index:-1}
+.hero-cta{min-width:190px}
+.card-benefits{gap:8px}
+.card-benefits article{padding:18px 8px}
+.card-benefits h2{font-size:12px;line-height:1.6}
+.card-benefits p{font-size:10px}
+.card-benefits small{display:none}
+.portal-redesign .portal-card-form{padding:18px}
+.portal-redesign .panel-heading{flex-wrap:wrap}
+.portal-redesign .cards-experience .state-box{min-height:180px}
+.portal-redesign .portal-card-item{padding:18px}
+.portal-shell .page-footer{flex-wrap:wrap;gap:10px}}
+@media(prefers-reduced-motion:reduce){.wallet-actions>*>span{transition:none}}

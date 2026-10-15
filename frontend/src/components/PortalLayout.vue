@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { UserRound, ShieldCheck, LogOut, ChevronRight } from '@lucide/vue'
+import { UserRound, ShieldCheck, LogOut, ChevronRight, House, CreditCard, ArrowDownToLine, Globe, ChevronDown } from '@lucide/vue'
 import { userApi } from '../lib/api'
 import { clearUserSession, userSession, userToken, updateUser } from '../lib/user-session'
 import ErrorBanner from './ErrorBanner.vue'
@@ -51,11 +51,26 @@ async function logout(): Promise<void> {
 </script>
 
 <template>
-  <div class="portal-shell">
-    <header class="portal-header"><RouterLink class="brand" to="/portal"><span class="brand-mark">f<span></span></span><span>fcard<span class="brand-period">.</span></span></RouterLink><span class="environment-badge"><span></span> SANDBOX</span></header>
+  <div class="portal-shell" :class="{ 'portal-redesign': ['portal-home', 'portal-cards'].includes(String(route.name)) }">
+    <header class="portal-header">
+      <RouterLink class="brand" to="/portal"><span class="brand-mark">f<span></span></span><span>fcard<span class="brand-period">.</span></span></RouterLink>
+      <div class="portal-header-account"><span class="environment-badge"><span></span> SANDBOX</span><RouterLink class="portal-profile" to="/portal/security"><span class="avatar"><UserRound :size="17" /></span><span>{{ userSession?.user.email }}</span><ChevronDown :size="15" /></RouterLink></div>
+    </header>
     <div class="portal-body">
-      <nav class="portal-nav" aria-label="用户导航"><RouterLink to="/portal"><UserRound :size="18" />个人账号</RouterLink><RouterLink to="/portal/cards"><ShieldCheck :size="18" />我的卡片</RouterLink><RouterLink to="/portal/security"><ShieldCheck :size="18" />账号安全</RouterLink><RouterLink to="/">管理控制台 <ChevronRight :size="16" /></RouterLink><button class="button secondary compact" :disabled="loggingOut" @click="logout"><LogOut :size="18" />退出用户登录</button></nav>
-      <main class="page-content"><div class="page-heading"><div><p class="eyebrow">FCARD PERSONAL ACCOUNT</p><h1>{{ route.meta.title }}</h1><p>{{ route.meta.description }}</p></div></div><ErrorBanner :error="error" /><div v-if="verifying" class="panel state-box" role="status"><span class="spinner"></span>正在验证用户会话…</div><div v-else-if="error" class="panel state-box"><button class="button secondary" @click="verify">重新验证</button><button class="button text-button" @click="clearUserSession">清除本地用户会话</button></div><RouterView v-else :key="userSession?.access_token" /><footer class="page-footer"><span>Fcard · 用户空间</span><span>仅沙盒测试 / 暂未开放真实资金功能</span></footer></main>
+      <aside class="portal-sidebar">
+        <nav class="portal-nav" aria-label="用户导航">
+          <RouterLink to="/portal" aria-label="个人账号"><House :size="21" />首页</RouterLink>
+          <RouterLink to="/portal/cards"><CreditCard :size="21" />我的卡片</RouterLink>
+          <RouterLink to="/portal/deposits"><ArrowDownToLine :size="21" />Nile 测试收款</RouterLink>
+          <RouterLink to="/portal/security"><ShieldCheck :size="21" />账号安全</RouterLink>
+        </nav>
+        <div class="portal-sidebar-bottom"><RouterLink to="/">管理控制台 <ChevronRight :size="15" /></RouterLink><button :disabled="loggingOut" @click="logout"><LogOut :size="18" />退出用户登录</button><span><Globe :size="18" />CN · 简体中文</span><small>© {{ new Date().getFullYear() }} Fcard</small></div>
+      </aside>
+      <main class="page-content">
+        <div v-if="!['portal-home', 'portal-cards'].includes(String(route.name))" class="page-heading"><div><p class="eyebrow">FCARD PERSONAL ACCOUNT</p><h1>{{ route.meta.title }}</h1><p>{{ route.meta.description }}</p></div></div>
+        <ErrorBanner :error="error" /><div v-if="verifying" class="panel state-box" role="status"><span class="spinner"></span>正在验证用户会话…</div><div v-else-if="error" class="panel state-box"><button class="button secondary" @click="verify">重新验证</button><button class="button text-button" @click="clearUserSession">清除本地用户会话</button></div><RouterView v-else :key="userSession?.access_token" />
+        <footer class="page-footer"><span>Fcard · 用户空间</span><span>沙盒测试 · 暂未开放真实资金功能</span></footer>
+      </main>
     </div>
   </div>
 </template>

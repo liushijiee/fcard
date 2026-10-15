@@ -4,6 +4,8 @@ import { ApiError, userApi } from '../lib/api'
 import { userSession, userToken } from '../lib/user-session'
 import { dateTime } from '../lib/format'
 import type { CardAvailability, CardOperation, Page, SandboxCard } from '../types'
+import { ArrowDownUp, CreditCard, ShieldCheck, ArrowDown } from '@lucide/vue'
+import PortalCardArtwork from '../components/PortalCardArtwork.vue'
 import ErrorBanner from '../components/ErrorBanner.vue'
 import PaginationBar from '../components/PaginationBar.vue'
 
@@ -99,10 +101,13 @@ onUnmounted(() => { disposed = true; controller?.abort(); if (polling) clearTime
 </script>
 
 <template>
+  <div class="cards-experience">
+  <section class="cards-hero"><div class="cards-hero-copy"><span class="mini-eyebrow">FCARD · VIRTUAL CARD</span><h1>让支付，多一种可能</h1><p>从一张虚拟卡开始，探索 Fcard 支付体验</p><a class="button hero-cta" href="#card-application">申请我的卡片 <ArrowDown :size="16" /></a><small>沙盒虚拟卡 · 在线申请与状态管理</small></div><PortalCardArtwork /></section>
+  <div class="card-benefits"><article><span class="benefit-icon blue"><ArrowDownUp :size="25" /></span><h2>额度清晰可见</h2><p>查看 USD 累计测试限额</p><small>限额与钱包余额分别展示</small></article><article><span class="benefit-icon mint"><CreditCard :size="25" /></span><h2>轻松管理卡片</h2><p>申请进度与卡片状态一目了然</p><small>支持同步最新卡片状态</small></article><article><span class="benefit-icon violet"><ShieldCheck :size="25" /></span><h2>安心查看，隐私保护</h2><p>仅展示卡片尾号与状态</p><small>完整卡号与 CVV 不在此展示</small></article></div>
   <ErrorBanner :error="error" />
   <div class="info-note">新申请为沙盒企业虚拟卡（非个性化），统一使用公司现有发卡身份。限额是供应商消费控制，不是用户余额；未实现入金、消费记账或真实资金服务。账号停用不等于供应商卡片冻结。</div>
   <p v-if="notice" role="status" class="portal-note">{{ notice }}</p>
-  <section class="panel portal-card-form">
+  <section id="card-application" class="panel portal-card-form">
     <div class="panel-heading"><div><h2>申请虚拟卡</h2><p v-if="config">每位用户最多 {{ config.max_cards }} 张未关闭或待核查卡片；当前占用 {{ config.occupied_slots }} 个名额，USD 累计测试限额 {{ amount(config.limit_cents) }}。</p></div><button class="button secondary compact" :disabled="loading || busy" @click="load">刷新本地状态</button></div>
     <p v-if="config && !config.enabled" class="info-note">管理员尚未启用沙盒开卡。</p>
     <p v-else-if="config && !config.company_configured" class="info-note">请联系管理员配置公司统一发卡身份，客户无需单独绑定持卡人。</p>
@@ -122,4 +127,6 @@ onUnmounted(() => { disposed = true; controller?.abort(); if (polling) clearTime
     </article>
     <PaginationBar :page="page" :page-size="pageSize" :total="records.total" :loading="loading" @page="changePage" @size="changeSize" />
   </section>
+  <div class="cards-provider"><span class="mini-eyebrow">CARD INFRASTRUCTURE</span><h2>Airwallex</h2><p>当前已接入 Airwallex 沙盒发卡服务</p></div>
+  </div>
 </template>

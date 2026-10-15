@@ -18,6 +18,7 @@ const navigation = [
   { to: '/users', label: '用户管理', icon: Users },
   { to: '/audit', label: '操作审计', icon: History },
   { to: '/cardholders', label: '公司发卡配置', icon: ShieldCheck },
+  { to: '/deposits', label: '测试收款运维', icon: ShieldCheck },
 ]
 const timer = window.setInterval(() => token(), 15000)
 onUnmounted(() => window.clearInterval(timer))
